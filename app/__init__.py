@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from flask_mongoengine import MongoEngine
 from flask_user import login_required, UserManager, UserMixin
-from .config import DevConfig
+from config import DevConfig
 
 def create_app(config_class=DevConfig):
     """ Flask app factory """
