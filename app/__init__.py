@@ -1,7 +1,8 @@
 from flask import Flask, render_template
 from flask_mongoengine import MongoEngine
-from flask_user import login_required, UserManager, UserMixin
+from flask_user import login_required, UserManager 
 from config import DevConfig
+from app.models import User
 
 def create_app(config_class=DevConfig):
     """ Flask app factory """
@@ -9,23 +10,8 @@ def create_app(config_class=DevConfig):
     app.config.from_object(config_class)
 
     with app.app_context():
-        db = MongoEngine(app)
-
-        # Define the User document.
-        # NB: Make sure to add flask_user UserMixin !!!
-        class User(db.Document, UserMixin):
-            active = db.BooleanField(default=True)
-
-            # User authentication information
-            username = db.StringField(default='')
-            password = db.StringField()
-
-            # User information
-            first_name = db.StringField(default='')
-            last_name = db.StringField(default='')
-
-            # Relationships
-            roles = db.ListField(db.StringField(), default=[])        
+        from app.models import db
+        db.init_app(app)
 
         # Setup Flask-User and specify the User data-model
         user_manager = UserManager(app, db, User)
